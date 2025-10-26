@@ -47,7 +47,13 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     properties: {
       SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
       WEBSITE_HTTPLOGGING_RETENTION_DAYS: '3'
-      ApiKey: 'your-secure-api-key-here'
+      // ApiKey: 'your-secure-api-key-here' // For McpServer.ApiKey project
+      EntraID__Instance: environment().authentication.loginEndpoint
+      EntraID__TenantId: '<your-tenant-id>'
+      EntraID__ClientId: '<your-client-id>'
+      EntraID__ClientSecret: '<your-client-secret>'
+      EntraID__Audience: 'api://<your-client-id>'
+      ServerUrl: 'https://${webApp.properties.defaultHostName}/'
     }
   }
 }

@@ -37,8 +37,8 @@ app.UseCors();
 // Add API Key authentication middleware
 app.UseMiddleware<ApiKeyAuthenticationMiddleware>();
 
-// Map MCP endpoints
-app.MapMcp();
+// Map MCP endpoints with explicit route
+app.MapMcp("/mcp");
 
 // Add a simple home page
 app.MapGet("/status", () => "MCP Server with API Key Authentication - Ready for use with HTTP transport");

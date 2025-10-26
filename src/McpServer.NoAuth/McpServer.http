@@ -1,5 +1,0 @@
-@McpServer_HostAddress = http://localhost:5000
-
-GET {{McpServer_HostAddress}}/status
-
-###

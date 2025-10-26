@@ -47,6 +47,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     properties: {
       SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
       WEBSITE_HTTPLOGGING_RETENTION_DAYS: '3'
+      ApiKey: 'your-secure-api-key-here'
     }
   }
 }

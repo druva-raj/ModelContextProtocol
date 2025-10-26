@@ -5,6 +5,6 @@ metadata:
   template: remote-mcp-webapp-dotnet
 services:
   web:
-    project: src/McpServer.NoAuth/
+    project: src/McpServer.ApiKey/
     language: dotnet
     host: appservice

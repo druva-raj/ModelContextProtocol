@@ -33,10 +33,11 @@ if (app.Environment.IsDevelopment())
 // Enable CORS
 app.UseCors();
 
-// Map MCP endpoints
-app.MapMcp();
+// Map MCP endpoints with explicit route
+app.MapMcp("/mcp");
 
 // Add a simple home page
+app.MapGet("/", () => "MCP Server on Azure App Service - Ready for use with HTTP transport");
 app.MapGet("/status", () => "MCP Server on Azure App Service - Ready for use with HTTP transport");
 
 app.Run();

@@ -10,7 +10,7 @@ param name string
 param location string
 
 @description('Environment type (e.g., dev, stg, prd)')
-param environmentType string = 'dev'
+param environmentType string = 'profx'
 
 @description('Workload identifier (e.g., mcp, api, web)')
 param workloadName string = 'mcp'
@@ -40,7 +40,7 @@ var tags = {
 
 // Naming pattern: {resourceType}-{exposure}-{location}-{workload}-{environment}-{instance}
 // Example: rg-ext-eus2-mcp-dev-01
-var namingPrefix = '${environmentType}-${locationAbbr}-${workloadName}'
+var namingPrefix = '${locationAbbr}-${workloadName}-${environmentType}'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: 'rg-ext-${namingPrefix}-${instanceNumber}'

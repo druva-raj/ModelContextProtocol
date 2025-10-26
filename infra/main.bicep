@@ -9,7 +9,7 @@ param name string
 @description('Location for all resources. This region must support Availability Zones.')
 param location string
 
-@description('Environment type (e.g., dev, stg, prd)')
+@description('Environment type (e.g., profx, dev, stg, prd)')
 param environmentType string = 'profx'
 
 @description('Workload identifier (e.g., mcp, api, web)')
@@ -34,12 +34,12 @@ var locationAbbreviations = {
 var locationAbbr = contains(locationAbbreviations, location) ? locationAbbreviations[location] : substring(location, 0, 4)
 var tags = { 
   'azd-env-name': name
-  'environment': environmentType
-  'workload': workloadName
+  environment: environmentType
+  workload: workloadName
 }
 
 // Naming pattern: {resourceType}-{exposure}-{location}-{workload}-{environment}-{instance}
-// Example: rg-ext-eus2-mcp-dev-01
+// Example: rg-ext-eus2-mcp-dev-01 (pattern: {resourceType}-{exposure}-{location}-{workload}-{environmentType}-{instance})
 var namingPrefix = '${locationAbbr}-${workloadName}-${environmentType}'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {

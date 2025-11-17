@@ -105,8 +105,18 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
+// Log startup configuration
+Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");
+Console.WriteLine($"Server URL: {serverUrl}");
+Console.WriteLine($"Authority: {entraIdOptions.Authority}");
+
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    // Enable detailed errors in production for debugging deployment issues
     app.UseDeveloperExceptionPage();
 }
 
@@ -126,8 +136,8 @@ app.MapGet("/", () => new
     authenticationEnabled = true,
     tenant = entraIdOptions.TenantId,
     audience = entraIdOptions.Audience
-});
+}).AllowAnonymous();
 
-app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
+app.MapGet("/health", () => Results.Ok(new { status = "healthy" })).AllowAnonymous();
 
 app.Run();

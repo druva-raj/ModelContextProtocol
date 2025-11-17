@@ -33,6 +33,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
       minTlsVersion: '1.2'
       http20Enabled: true
       alwaysOn: true
+      webSocketsEnabled: true
       windowsFxVersion: 'DOTNET|9.0'
       metadata: [
         {
@@ -53,7 +54,11 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
       EntraID__ClientId: '<your-client-id>'
       EntraID__ClientSecret: '<your-client-secret>'
       EntraID__Audience: 'api://<your-client-id>'
+      EntraID__Scopes__0: ''
       ServerUrl: 'https://${webApp.properties.defaultHostName}/'
+      ASPNETCORE_ENVIRONMENT: 'Production'
+      Logging__LogLevel__Default: 'Information'
+      Logging__LogLevel__Microsoft__AspNetCore: 'Warning'
     }
   }
 }

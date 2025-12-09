@@ -25,10 +25,10 @@ MCP server with API Key authentication using custom middleware.
 - HTTP transport
 - Sample tools: Multiplication, Temperature Conversion, Weather
 
-### 3. McpServer.EntraID (NEW)
-MCP server with Microsoft EntraID (Azure AD) authentication supporting both Client Credentials flow and Bearer token authentication.
+### 3. McpServer.EntraID.Bearer
+MCP server with Microsoft EntraID (Azure AD) authentication supporting Bearer token authentication.
 
-**Location:** `src/McpServer.EntraID`
+**Location:** `src/McpServer.EntraID.Bearer`
 
 **Features:**
 - ✅ Microsoft EntraID (Azure AD) authentication
@@ -36,17 +36,17 @@ MCP server with Microsoft EntraID (Azure AD) authentication supporting both Clie
 - ✅ Client Credentials flow support
 - ✅ Supports both v1.0 and v2.0 tokens
 - ✅ Falls back to no-auth mode if not configured
-- ✅ PowerShell scripts for token generation and testing
+- ✅ PowerShell script for token generation
 - ✅ HTTP transport
 - ✅ Sample tools: Multiplication, Temperature Conversion, Weather
 
 **Quick Start:**
 ```bash
-cd src/McpServer.EntraID
+cd src/McpServer.EntraID.Bearer
 dotnet run
 ```
 
-See [McpServer.EntraID/README.md](src/McpServer.EntraID/README.md) for detailed setup instructions.
+See [McpServer.EntraID.Bearer/README.md](src/McpServer.EntraID.Bearer/README.md) for detailed setup instructions.
 
 ## Getting Started
 
@@ -65,8 +65,8 @@ dotnet run
 cd src/McpServer.ApiKey
 dotnet run
 
-# EntraID authentication
-cd src/McpServer.EntraID
+# EntraID Bearer authentication
+cd src/McpServer.EntraID.Bearer
 dotnet run
 ```
 
@@ -81,9 +81,8 @@ dotnet build
 Each project includes its own testing approach:
 
 - **NoAuth/ApiKey**: Direct HTTP calls with curl or PowerShell
-- **EntraID**: Use provided PowerShell scripts in `Scripts/` folder
+- **EntraID.Bearer**: Use provided PowerShell script in `Scripts/` folder
   - `Get-Token.ps1` - Obtain Bearer token
-  - `Test-McpServer.ps1` - Run comprehensive tests
 
 ## License
 

@@ -164,6 +164,59 @@ curl -X POST http://localhost:5500/mcp \
 4. **GetAlerts** - Get weather alerts for a US state
 5. **GetForecast** - Get weather forecast for a location (lat/long)
 
+## Client App Registration (for OAuth Passthrough)
+
+For OAuth Identity Passthrough (interactive login), you need a **separate client app** registration. The server app (API) and client app must be different to avoid `AADSTS90009` errors.
+
+### Setup
+
+1. **Create Client App Registration:**
+   ```bash
+   az ad app create --display-name "MCP-Client" --sign-in-audience "AzureADMyOrg"
+   az ad app credential reset --id <client-app-id> --display-name "secret"
+   ```
+
+2. **Add API Permission:**
+   ```bash
+   # Get the scope ID from the API app
+   az ad app show --id <api-app-id> --query "api.oauth2PermissionScopes"
+   
+   # Grant permission
+   az ad app permission add --id <client-app-id> --api <api-app-id> --api-permissions "<scope-id>=Scope"
+   az ad app permission grant --id <client-app-id> --api <api-app-id> --scope "mcp.tools"
+   ```
+
+3. **Configure Redirect URIs (as SPA for browser-based clients):**
+   ```bash
+   # For MCP Inspector or similar browser clients
+   az rest --method PATCH \
+     --uri "https://graph.microsoft.com/v1.0/applications/<app-object-id>" \
+     --body '{"spa":{"redirectUris":["http://localhost:6274/oauth/callback"]}}'
+   
+   # For server-side clients (web redirect)
+   az ad app update --id <client-app-id> --web-redirect-uris "https://your-callback-url"
+   ```
+
+### Client Configuration Values
+
+| Field | Value |
+|-------|-------|
+| **MCP Server endpoint** | `https://<your-server>/mcp` |
+| **Client ID** | Client App ID (NOT the API app) |
+| **Client Secret** | Client App secret |
+| **Token URL** | `https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/token` |
+| **Auth URL** | `https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/authorize` |
+| **Scopes** | `https://<your-server>/.default` |
+
+### When to Use What
+
+| Scenario | Use |
+|----------|-----|
+| Service-to-service (no user) | API app credentials + `.default` scope |
+| Interactive login (OAuth Passthrough) | Client app credentials + user consent |
+| MCP Inspector / Browser clients | Client app + SPA redirect URIs |
+| Server-side clients | Client app + Web redirect URIs |
+
 ## Security Notes
 
 - ✅ Always use HTTPS in production

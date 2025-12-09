@@ -47,6 +47,19 @@ builder.Services.AddAuthentication(options =>
     
     options.Events = new JwtBearerEvents
     {
+        OnMessageReceived = context =>
+        {
+            var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(authHeader))
+            {
+                Console.WriteLine($"Received Authorization header: {authHeader.Substring(0, Math.Min(50, authHeader.Length))}...");
+            }
+            else
+            {
+                Console.WriteLine("No Authorization header received");
+            }
+            return Task.CompletedTask;
+        },
         OnTokenValidated = context =>
         {
             var name = context.Principal?.Identity?.Name ?? "unknown";
@@ -54,18 +67,24 @@ builder.Services.AddAuthentication(options =>
                        context.Principal?.FindFirstValue("upn") ?? 
                        context.Principal?.FindFirstValue("email") ?? "unknown";
             var oid = context.Principal?.FindFirstValue("oid") ?? "unknown";
+            var aud = context.Principal?.FindFirstValue("aud") ?? "unknown";
+            var iss = context.Principal?.FindFirstValue("iss") ?? "unknown";
             
-            Console.WriteLine($"Token validated for: {name} ({email}) [OID: {oid}]");
+            Console.WriteLine($"Token validated - Name: {name}, Email: {email}, OID: {oid}, Audience: {aud}, Issuer: {iss}");
             return Task.CompletedTask;
         },
         OnAuthenticationFailed = context =>
         {
             Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            if (context.Exception.InnerException != null)
+            {
+                Console.WriteLine($"Inner exception: {context.Exception.InnerException.Message}");
+            }
             return Task.CompletedTask;
         },
         OnChallenge = context =>
         {
-            Console.WriteLine("Authentication challenge issued");
+            Console.WriteLine($"Authentication challenge issued. Error: {context.Error}, Description: {context.ErrorDescription}");
             return Task.CompletedTask;
         }
     };

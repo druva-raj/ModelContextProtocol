@@ -3,7 +3,7 @@
 $tenantId = "<your-tenant-id>"
 $clientId = "<your-client-id>"
 $clientSecret = "<your-client-secret>"
-$scope = "api://<your-client-id>/.default"
+$scope = "<your-app-scope>"
 
 $tokenUrl = "https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token"
 

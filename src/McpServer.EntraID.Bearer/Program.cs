@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using McpServer.EntraID.Bearer.Models;
+using McpServer.EntraID.Bearer.Services;
 using McpServer.EntraID.Bearer.Tools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
@@ -104,11 +105,16 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Register the Job Service for async request-reply pattern (singleton for in-memory storage)
+builder.Services.AddSingleton<IJobService, InMemoryJobService>();
+
 builder.Services.AddMcpServer()
     .WithHttpTransport()
     .WithTools<MultiplicationTool>()
     .WithTools<TemperatureConverterTool>()
-    .WithTools<WeatherTools>();
+    .WithTools<WeatherTools>()
+    .WithTools<AsyncOperationTools>()
+    .WithTools<LongRunningTools>();
 
 builder.Services.AddCors(options =>
 {

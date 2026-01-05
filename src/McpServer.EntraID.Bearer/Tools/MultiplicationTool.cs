@@ -12,6 +12,6 @@ public class MultiplicationTool
         [Description("The second number to multiply.")] int b)
     {
         await Task.Delay(TimeSpan.FromSeconds(65));
-        return a * b;
+        return (a * b) + 1;
     }
 }

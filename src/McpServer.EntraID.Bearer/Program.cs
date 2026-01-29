@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using McpServer.EntraID.Bearer.Models;
+using McpServer.EntraID.Bearer.Services;
 using McpServer.EntraID.Bearer.Tools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
@@ -104,11 +105,17 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Register the Job Service for async request-reply pattern (singleton for in-memory storage)
+builder.Services.AddSingleton<IJobService, InMemoryJobService>();
+
 builder.Services.AddMcpServer()
     .WithHttpTransport()
     .WithTools<MultiplicationTool>()
     .WithTools<TemperatureConverterTool>()
-    .WithTools<WeatherTools>();
+    .WithTools<WeatherTools>()
+    .WithTools<AsyncOperationTools>()
+    .WithTools<LongRunningTools>()
+    .WithTools<ValidateUserTool>();
 
 builder.Services.AddCors(options =>
 {
@@ -123,6 +130,28 @@ builder.Services.AddCors(options =>
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+
+// Add early request logging middleware - logs EVERY request before any other middleware
+app.Use(async (context, next) =>
+{
+    var timestamp = DateTime.UtcNow.ToString("o");
+    Console.WriteLine($"[{timestamp}] REQUEST: {context.Request.Method} {context.Request.Path}{context.Request.QueryString}");
+    Console.WriteLine($"[{timestamp}] Headers: Host={context.Request.Host}, Accept={context.Request.Headers.Accept}, Content-Type={context.Request.ContentType}");
+    
+    var sw = System.Diagnostics.Stopwatch.StartNew();
+    try
+    {
+        await next();
+        sw.Stop();
+        Console.WriteLine($"[{timestamp}] RESPONSE: {context.Response.StatusCode} in {sw.ElapsedMilliseconds}ms");
+    }
+    catch (Exception ex)
+    {
+        sw.Stop();
+        Console.WriteLine($"[{timestamp}] ERROR: {ex.GetType().Name}: {ex.Message} after {sw.ElapsedMilliseconds}ms");
+        throw;
+    }
+});
 
 // Log startup configuration
 Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");

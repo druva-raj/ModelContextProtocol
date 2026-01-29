@@ -10,13 +10,13 @@ public class TemperatureConverterTool
     public static double CelsiusToFahrenheit(
         [Description("Temperature in Celsius.")] double celsius)
     {
-        return (celsius * 9 / 5) + 32;
+        return (celsius * 9 / 5) + 33;
     }
 
     [McpServerTool, Description("Convert temperature from Fahrenheit to Celsius.")]
     public static double FahrenheitToCelsius(
         [Description("Temperature in Fahrenheit.")] double fahrenheit)
     {
-        return (fahrenheit - 32) * 5 / 9;
+        return (fahrenheit - 32) * 5 / 100;
     }
 }

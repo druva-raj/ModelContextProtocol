@@ -53,7 +53,8 @@ builder.Services.AddAuthentication(options =>
             var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
             if (!string.IsNullOrEmpty(authHeader))
             {
-                Console.WriteLine($"Received Authorization header: {authHeader.Substring(0, Math.Min(50, authHeader.Length))}...");
+                // Do not log the token itself; record presence only to avoid leaking bearer tokens to logs.
+                Console.WriteLine("Received Authorization header (Bearer token present)");
             }
             else
             {
